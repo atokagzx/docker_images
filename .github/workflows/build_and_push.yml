@@ -25,10 +25,16 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and Push Base Image
-        run: |
-          ls -la
-          source build_and_push.sh service_base
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
+          context: service_base
+          file: Dockerfile
+          pull: true
+          network: host
+          
 
   build-ros-image:
     runs-on: ubuntu-latest
@@ -52,6 +58,16 @@ jobs:
       - name: Wait for Docker
         run: |
           until docker info; do sleep 1; done
-      - name: Build and Push ROS Image
-        run: |
-          source build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
+      # - name: Build and Push ROS Image
+      #   run: |
+      #     source build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ghcr.io/${GITHUB_REPOSITORY_OWNER}/ros2_base:latest
+          context: ros2_base
+          file: Dockerfile
+          pull: true
+          network: host
+          build-args: BASE_IMAGE=ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
