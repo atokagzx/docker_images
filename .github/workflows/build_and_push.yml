@@ -15,9 +15,10 @@ jobs:
         options: --privileged
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build and Push Base Image
         run: |
+          ls -la
           build_and_push.sh service_base
 
   build-ros-image:
@@ -29,10 +30,10 @@ jobs:
         options: --privileged
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Wait for Docker
         run: |
           until docker info; do sleep 1; done
       - name: Build and Push ROS Image
         run: |
-          build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}//service_base:latest
+          build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
