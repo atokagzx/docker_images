@@ -28,15 +28,20 @@ jobs:
       - name: Set tag postfix
         id: set-postfix
         run: |
+          tags=()
           if [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "TAGS=ghcr.io/${{ github.repository_owner }}/service_base:latest,ghcr.io/${{ github.repository_owner }}/service_base:latest-stable" >> $GITHUB_ENV
+            tags+=("ghcr.io/${{ github.repository_owner }}/service_base:latest")
+            tags+=("ghcr.io/${{ github.repository_owner }}/service_base:latest-stable")
           elif [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "TAGS=ghcr.io/${{ github.repository_owner }}/service_base:latest" >> $GITHUB_ENV
+            tags+=("ghcr.io/${{ github.repository_owner }}/service_base:latest")
+          fi
+          tags+=("ghcr.io/${{ github.repository_owner }}/service_base:${{ github.run_number }}")
+          echo "TAGS=${tags[@]}" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ env.TAGS }}
+          tags: ${{ steps.set-postfix.outputs.TAGS }}
           context: service_base
           pull: true
           network: host
