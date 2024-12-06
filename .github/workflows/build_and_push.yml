@@ -19,7 +19,7 @@ jobs:
       - name: Build and Push Base Image
         run: |
           ls -la
-          build_and_push.sh service_base
+          source build_and_push.sh service_base
 
   build-ros-image:
     runs-on: ubuntu-latest
@@ -36,4 +36,4 @@ jobs:
           until docker info; do sleep 1; done
       - name: Build and Push ROS Image
         run: |
-          build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
+          source build_and_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}/service_base:latest
