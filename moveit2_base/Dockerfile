@@ -56,6 +56,6 @@ RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-a
 RUN echo "source /opt/ros/humble/setup.bash\nsource /root/ws_moveit2/install/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/ros/humble/setup.zsh\nsource /root/ws_moveit2/install/setup.zsh" >> ~/.zshrc
 
-COPY ./docker/entrypoint.sh /tmp/entrypoint.sh
+COPY ./entrypoint.sh /tmp/entrypoint.sh
 WORKDIR /root
 ENTRYPOINT ["/tmp/entrypoint.sh"]
