@@ -31,7 +31,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/service_base:latest
           context: ./service_base
-          file: Dockerfile
           pull: true
           network: host
           
@@ -67,7 +66,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/ros2_base:latest
           context: ./ros2_base
-          file: Dockerfile
           pull: true
           network: host
           build-args: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/service_base:latest
