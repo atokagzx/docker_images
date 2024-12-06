@@ -7,20 +7,8 @@ on:
       - develop
 
 jobs:
-  determine-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Determine version
-        run: |
-          echo ${{ secrets.GIT_VERSION_FULL_SEMVER }}
-          echo "Environment Variables:"
-          env
-
   build-base-image:
     runs-on: ubuntu-latest
-    needs: determine-version
     services:
       docker:
         image: docker:latest
@@ -29,16 +17,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Build and Push Base Image
-        env:
-          GIT_VERSION_FULL_SEMVER: ${{ secrets.GIT_VERSION_FULL_SEMVER }}
         run: |
-          echo $GIT_VERSION_FULL_SEMVER
-          env
           source build_push.sh service_base
 
   build-ros-image:
     runs-on: ubuntu-latest
-    needs: [build-base-image, determine-version]
+    needs: [build-base-image]
     services:
       docker:
         image: docker:latest
@@ -50,24 +34,5 @@ jobs:
         run: |
           until docker info; do sleep 1; done
       - name: Build and Push ROS Image
-        env:
-          DOCKER_REGISTRY_URL: ${{ secrets.DOCKER_REGISTRY_URL }}
-          DOCKER_REGISTRY_ORGANIZATION: ${{ secrets.DOCKER_REGISTRY_ORGANIZATION }}
         run: |
-          echo $GIT_VERSION_FULL_SEMVER
-          env
-          source build_push.sh ros2_base $DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_ORGANIZATION/service_base:latest
-
-  run-ros-triggers:
-    runs-on: ubuntu-latest
-    needs: build-ros-image
-    steps:
-      - name: Run ROS Triggers
-        run: echo "Include ROS triggers from /.ros_triggers.yml"
-
-  run-services-triggers:
-    runs-on: ubuntu-latest
-    needs: build-ros-image
-    steps:
-      - name: Run Services Triggers
-        run: echo "Include services triggers from /.services_triggers.yml"
+          source build_push.sh ros2_base ghcr.io/${GITHUB_REPOSITORY_OWNER}//service_base:latest
