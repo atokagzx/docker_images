@@ -1,0 +1,90 @@
+name: CI Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+
+jobs:
+  build-service-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set tag postfix
+        id: set-postfix
+        run: |
+          tags=""
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:latest"
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:latest-stable"
+          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:latest"
+          fi
+          tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:${{ github.run_number }}"
+          echo "TAGS=${tags}" >> $GITHUB_ENV
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.TAGS }}
+          context: service_base
+          pull: true
+          network: host
+
+          
+  build-ros-image:
+    runs-on: ubuntu-latest
+    needs: [build-service-image]
+    permissions:
+      contents: read
+      packages: write
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set tag postfix
+        id: set-postfix
+        run: |
+          tags=""
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:latest"
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:latest-stable"
+          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
+            tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:latest"
+          fi
+          tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:${{ github.run_number }}"
+          echo "TAGS=${tags}" >> $GITHUB_ENV
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: ${{ env.TAGS }}
+          context: ros2_base
+          pull: true
+          network: host
+          build-args: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/service_base:latest
