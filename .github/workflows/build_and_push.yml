@@ -25,12 +25,19 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set tag postfix
+        id: set-postfix
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "TAGS=ghcr.io/${{ github.repository_owner }}/service_base:latest,ghcr.io/${{ github.repository_owner }}/service_base:latest-stable" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo "TAGS=ghcr.io/${{ github.repository_owner }}/service_base:latest" >> $GITHUB_ENV
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/service_base:latest
-          context: ./service_base
+          tags: ${{ env.TAGS }}
+          context: service_base
           pull: true
           network: host
           
@@ -57,15 +64,12 @@ jobs:
       - name: Wait for Docker
         run: |
           until docker info; do sleep 1; done
-      # - name: Build and Push ROS Image
-      #   run: |
-      #     source build_and_push.sh ros2_base ghcr.io/${{ github.repository_owner }}/service_base:latest
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/ros2_base:latest
-          context: ./ros2_base
+          context: ros2_base
           pull: true
           network: host
           build-args: BASE_IMAGE=ghcr.io/${{ github.repository_owner }}/service_base:latest
