@@ -3,9 +3,6 @@
 IMAGE_NAME=$1
 BASE_IMAGE=$2
 
-# Authenticate with GitHub Container Registry
-echo $GHCR_PAT | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
-
 # Build the Docker image with the appropriate tags
 docker build --network=host --pull \
 --build-arg BASE_IMAGE=$BASE_IMAGE \
