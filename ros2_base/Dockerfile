@@ -9,11 +9,8 @@ RUN apt update && apt upgrade -y && \
     apt install -y ros-dev-tools \
     ros-humble-ros-base \
     ros-humble-joy \
-    ros-humble-rmw-cyclonedds-cpp \
     && rm -rf /var/lib/apt/lists/*
     
-ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
 
 RUN apt update && apt install -y \
