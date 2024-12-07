@@ -14,6 +14,7 @@ RUN apt update && apt upgrade -y && \
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
 
 COPY requirements.txt /tmp/requirements.txt
+WORKDIR /tmp
 RUN pip3 install -r /tmp/requirements.txt --no-cache-dir
 
 ADD https://github.com/naoki-mizuno/ds4_driver#humble-devel /opt/contrib_ws/src
