@@ -1,4 +1,4 @@
 opencv-contrib-python-headless==4.10.0.84
 pyudev==0.24.3
-evdev==1.7.0
+evdev==1.7.1
 git+https://github.com/naoki-mizuno/ds4drv@devel
