@@ -37,5 +37,7 @@ RUN apt update && apt install -y \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip3 install --no-cache-dir setuptools==70.0.0
+
 COPY requirements.txt /tmp/requirements.txt
 RUN pip3 install -r /tmp/requirements.txt --no-cache-dir

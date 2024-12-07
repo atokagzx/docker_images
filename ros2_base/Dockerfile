@@ -16,7 +16,6 @@ RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-a
 RUN pip3 install --no-cache-dir pyudev==0.24.3 evdev==1.7.1 
     
 WORKDIR /opt
-RUN pip3 install setuptools==70.0.0
 RUN git clone https://github.com/naoki-mizuno/ds4drv -b devel \
     && cd ds4drv \
     && python3 setup.py install

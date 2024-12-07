@@ -7,6 +7,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/r
 
 RUN apt update && apt install -y cargo \
     && rm -rf /var/lib/apt/lists/*
+RUN rustup update
 ENV PATH=/root/.cargo/bin:$PATH
 RUN cargo install urdf-viz
 
@@ -36,7 +37,7 @@ RUN git clone https://github.com/osqp/osqp && \
     cmake -G "Unix Makefiles" .. && \
     cmake --build . --target install
 
-ADD https://github.com/moveit/moveit2.git#4c28a74343e1d8470689cae9e23eb30c91bdcb4d /root/ws_moveit2/src/moveit2
+ADD https://github.com/moveit/moveit2.git#main /root/ws_moveit2/src/moveit2
 WORKDIR /root/ws_moveit2
 
 RUN /usr/bin/zsh -c 'source /opt/ros/humble/setup.zsh && \
