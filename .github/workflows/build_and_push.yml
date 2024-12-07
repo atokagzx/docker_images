@@ -46,6 +46,8 @@ jobs:
           context: service_base
           pull: true
           network: host
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/service_base:latest
+          cache-to: type=inline
 
           
   build-ros2-image:
