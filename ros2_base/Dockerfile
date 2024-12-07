@@ -13,22 +13,14 @@ RUN apt update && apt upgrade -y && \
     
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
 
-RUN pip3 install --no-cache-dir pyudev==0.24.3 evdev==1.7.1 
-    
-WORKDIR /opt
-RUN git clone https://github.com/naoki-mizuno/ds4drv -b devel \
-    && cd ds4drv \
-    && python3 setup.py install
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt --no-cache-dir
 
-WORKDIR /opt/contrib_ws/src
-RUN git clone https://github.com/naoki-mizuno/ds4_driver -b humble-devel
+ADD https://github.com/naoki-mizuno/ds4_driver#humble-devel /opt/contrib_ws/src
 WORKDIR /opt/contrib_ws
 RUN /bin/zsh -c "source /opt/ros/humble/setup.zsh && colcon build"
 RUN echo "source /opt/ros/humble/setup.bash\nsource /opt/contrib_ws/install/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/ros/humble/setup.zsh\nsource /opt/contrib_ws/install/setup.zsh" >> ~/.zshrc
-
-COPY requirements.txt /tmp/requirements.txt
-RUN pip3 install -r /tmp/requirements.txt --no-cache-dir
 
 COPY entrypoint.sh /tmp/entrypoint.sh
 WORKDIR /root

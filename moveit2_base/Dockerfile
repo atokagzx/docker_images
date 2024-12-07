@@ -6,10 +6,11 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/r
     $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 RUN apt update && apt install -y cargo \
-    && rm -rf /var/lib/apt/lists/*
-RUN rustup update
+    && rm -rf /var/lib/apt/lists/* \
+    && curl https://sh.rustup.rs -sSf | sh -s -- -y
 ENV PATH=/root/.cargo/bin:$PATH
-RUN cargo install urdf-viz
+RUN rustup update stable && cargo install urdf-viz
+
 
 RUN apt update && apt install -y ros-dev-tools \
     ros-humble-desktop \
