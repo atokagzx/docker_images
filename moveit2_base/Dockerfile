@@ -3,7 +3,12 @@ FROM ${BASE_IMAGE}
 
 RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu \
-$(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+    $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+RUN apt update && apt install -y cargo \
+    && rm -rf /var/lib/apt/lists/*
+ENV PATH=/root/.cargo/bin:$PATH
+RUN cargo install urdf-viz
 
 RUN apt update && apt install -y ros-dev-tools \
     ros-humble-desktop \
@@ -22,6 +27,8 @@ RUN apt update && apt install -y ros-dev-tools \
     ros-humble-ament-cmake-google-benchmark \
     && rm -rf /var/lib/apt/lists/*
 
+RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
+
 WORKDIR /osqp
 RUN git clone https://github.com/osqp/osqp && \
     cd osqp && \
@@ -39,19 +46,6 @@ RUN /usr/bin/zsh -c 'source /opt/ros/humble/setup.zsh && \
     rosdep install -r --from-paths . --ignore-src --rosdistro humble -y && \
     colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release && \
     rm -rf /var/lib/apt/lists/*'
-
-RUN apt update && apt install -y cargo \
-    xorg-dev \
-    libglu1-mesa-dev \
-    socat \
-    python3-pip \
-    python3-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN cargo install urdf-viz
-ENV PATH=/root/.cargo/bin:$PATH
-
-RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
 
 RUN echo "source /opt/ros/humble/setup.bash\nsource /root/ws_moveit2/install/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/ros/humble/setup.zsh\nsource /root/ws_moveit2/install/setup.zsh" >> ~/.zshrc
