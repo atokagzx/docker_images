@@ -13,11 +13,6 @@ RUN apt update && apt upgrade -y && \
     
 RUN echo 'eval "$(register-python-argcomplete3 ros2)"\neval "$(register-python-argcomplete3 colcon)"' >> ~/.zshrc
 
-RUN apt update && apt install -y \
-    xorg-dev \
-    libglu1-mesa-dev \
-    && rm -rf /var/lib/apt/lists/*
-
 RUN pip3 install --no-cache-dir pyudev==0.24.3 evdev==1.7.1 
     
 WORKDIR /opt
