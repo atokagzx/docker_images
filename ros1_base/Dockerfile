@@ -56,16 +56,6 @@ RUN apt update && apt install -y python3-rosdep \
 RUN echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
 RUN echo "source /opt/ros/noetic/setup.zsh" >> ~/.zshrc
 
-WORKDIR /root/ws_ros_contrib
-# Install ocam_ros
-RUN apt update && apt install -y    libudev-dev \
-                                    libv4l-dev \
-    && rm -rf /var/lib/apt/lists/*
-ADD https://github.com/superjax/ocam_ros.git#master /root/ws_ros_contrib/src/ocam_ros
-RUN /usr/bin/zsh -c 'source /opt/ros/noetic/setup.zsh && catkin_make'
-RUN echo "source /root/ws_ros_contrib/devel/setup.bash" >> ~/.bashrc
-RUN echo "source /root/ws_ros_contrib/devel/setup.zsh" >> ~/.zshrc
-
 COPY ./entrypoint.sh /tmp/entrypoint.sh
 WORKDIR /root
 ENTRYPOINT ["/tmp/entrypoint.sh"]
