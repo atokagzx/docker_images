@@ -1,7 +1,7 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-WORKDIR /root/ws_ros_contrib
+WORKDIR /root/ws_ros_contrib/src
 RUN pip install opencv-contrib-python==3.4.18.65
 
 RUN apt update && apt install -y    libudev-dev \
