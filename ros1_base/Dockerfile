@@ -61,7 +61,7 @@ WORKDIR /root/ws_ros_contrib
 RUN apt update && apt install -y    libudev-dev \
                                     libv4l-dev \
     && rm -rf /var/lib/apt/lists/*
-ADD https://github.com/superjax/ocam_ros.git#main /root/ws_ros_contrib/src/ocam_ros
+ADD https://github.com/superjax/ocam_ros.git#master /root/ws_ros_contrib/src/ocam_ros
 RUN /usr/bin/zsh -c 'source /opt/ros/noetic/setup.zsh && catkin_make'
 RUN echo "source /root/ws_ros_contrib/devel/setup.bash" >> ~/.bashrc
 RUN echo "source /root/ws_ros_contrib/devel/setup.zsh" >> ~/.zshrc
