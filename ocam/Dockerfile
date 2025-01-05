@@ -2,7 +2,7 @@ ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 WORKDIR /root/ws_ros_contrib
-RUN pip uninstall opencv-contrib-python
+RUN pip uninstall -y opencv-contrib-python
 RUN apt-get update && apt-get install -y \
     libopencv-dev=3.2.0+dfsg-4ubuntu0.1 \
     python3-opencv \
