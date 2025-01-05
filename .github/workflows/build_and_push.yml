@@ -3,7 +3,7 @@ name: CI Workflow
 on:
   push:
     branches:
-      - main
+      - master
       - develop
 
 
@@ -28,7 +28,7 @@ jobs:
         id: set-postfix
         run: |
           tags=""
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
             tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:latest"
             tags="${tags},ghcr.io/${{ github.repository_owner }}/service_base:latest-stable"
           elif [[ "${{ github.ref_name }}" == "develop" ]]; then
@@ -71,7 +71,7 @@ jobs:
         id: set-postfix
         run: |
           tags=""
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
             tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:latest"
             tags="${tags},ghcr.io/${{ github.repository_owner }}/ros2_base:latest-stable"
           elif [[ "${{ github.ref_name }}" == "develop" ]]; then
@@ -113,7 +113,7 @@ jobs:
         id: set-postfix
         run: |
           tags=""
-          if [[ "${{ github.ref_name }}" == "main" ]]; then
+          if [[ "${{ github.ref_name }}" == "master" ]]; then
             tags="${tags},ghcr.io/${{ github.repository_owner }}/moveit2_base:latest"
             tags="${tags},ghcr.io/${{ github.repository_owner }}/moveit2_base:latest-stable"
           elif [[ "${{ github.ref_name }}" == "develop" ]]; then
