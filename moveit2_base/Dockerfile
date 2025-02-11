@@ -38,7 +38,7 @@ RUN git clone https://github.com/osqp/osqp && \
     cmake -G "Unix Makefiles" .. && \
     cmake --build . --target install
 
-ADD https://github.com/moveit/moveit2.git#main /root/ws_moveit2/src/moveit2
+ADD https://github.com/moveit/moveit2.git#2.12.1 /root/ws_moveit2/src/moveit2
 WORKDIR /root/ws_moveit2
 
 RUN /usr/bin/zsh -c 'source /opt/ros/humble/setup.zsh && \
